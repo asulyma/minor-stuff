@@ -1,19 +1,15 @@
 package resource;
 
-/**
- * Created by local on 05-Feb-17.
- */
 public class BubbleSort implements Sorted {
+
+    private boolean swapped = true;
+    private int j = 0;
+
     @Override
     public void sortArray(int[] arr) {
-        boolean swapped = true;
-        int j = 0;
-
         System.out.println("Sorted with bubble");
-        for(int i = 0; i<arr.length; i++)
-        {
+        for (int i = 0; i < arr.length; i++)
             System.out.print(arr[i] + " ");
-        }
         System.out.println("\n=================================================");
 
 
@@ -29,11 +25,7 @@ public class BubbleSort implements Sorted {
                 }
             }
         }
-
-        for(int i = 0; i<arr.length; i++)
-        {
+        for (int i = 0; i < arr.length; i++)
             System.out.print(arr[i] + " ");
-        }
-
     }
 }

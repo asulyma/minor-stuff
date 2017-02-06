@@ -1,20 +1,15 @@
 package resource;
 
-/**
- * Created by local on 05-Feb-17.
- */
 public class SelectionSort implements Sorted {
+
+    private int minIndex;
+    private int tmp;
 
     @Override
     public void sortArray(int[] arr) {
-
-        int minIndex, tmp;
-
         System.out.println("Sorted with selection");
-        for(int i = 0; i<arr.length; i++)
-        {
+        for (int i = 0; i < arr.length; i++)
             System.out.print(arr[i] + " ");
-        }
         System.out.println("\n=================================================");
 
 
@@ -31,11 +26,7 @@ public class SelectionSort implements Sorted {
                 }
             }
         }
-
-
-        for(int i = 0; i<arr.length; i++)
-        {
+        for (int i = 0; i < arr.length; i++)
             System.out.print(arr[i] + " ");
-        }
     }
 }

@@ -14,7 +14,7 @@ public class work {
             array[i] = random.nextInt(20);
         }
 
-        SortedFactory sortedFactory = createSortMethod("bubble");
+        SortedFactory sortedFactory = createSortMethod("selection");
         Sorted sorted = sortedFactory.create();
         sorted.sortArray(array);
 
@@ -29,6 +29,10 @@ public class work {
         else if(spec.equalsIgnoreCase("selection"))
         {
             return new SelectionSortFactory();
+        }
+        else if(spec.equalsIgnoreCase("merge"))
+        {
+            return new MergeSortFactory();
         }
         else {
             throw new RuntimeException("NOT FOUND!");
