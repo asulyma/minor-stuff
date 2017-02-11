@@ -1,4 +1,4 @@
-package resource;
+package typeOfSorts;
 
 /**
  * Created by local on 05-Feb-17.

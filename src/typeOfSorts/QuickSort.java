@@ -1,8 +1,5 @@
-package resource;
+package typeOfSorts;
 
-/**
- * Created by local on 09-Feb-17.
- */
 public class QuickSort implements Sorted {
     @Override
     public void sortArray(int[] arr) {

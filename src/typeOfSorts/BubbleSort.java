@@ -1,4 +1,4 @@
-package resource;
+package typeOfSorts;
 
 public class BubbleSort implements Sorted {
 

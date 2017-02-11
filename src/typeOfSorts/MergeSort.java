@@ -1,4 +1,4 @@
-package resource;
+package typeOfSorts;
 
 import java.util.Arrays;
 

@@ -14,7 +14,8 @@ public class Work {
 
     public static void main(String[] args) {
        builder = new Builder();
-
+        //https://diakov.net/uploads/posts/2016-10/1476432520_realtek-logo1.png
+        //http://poplm-lone.narod.ru/loveplane-57.jpg
     }
 
 
@@ -27,14 +28,14 @@ public class Work {
     }
     public static void setImage(URL url) {
         try {
-            ImageIO.read(url);
+            image = ImageIO.read(url);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     public static void setImage(File file) {
         try {
-            ImageIO.read(file);
+            image = ImageIO.read(file);
         } catch (IOException e) {
             e.printStackTrace();
         }

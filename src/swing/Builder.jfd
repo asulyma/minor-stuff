@@ -4,32 +4,18 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
-			"$columnSpecs": "10dlu, labelcompgap, 100dlu, labelcompgap, 158dlu, labelcompgap, 11dlu"
-			"$rowSpecs": "18dlu, linegap, 30dlu, linegap, 108dlu, linegap, 9dlu"
+			"$columnSpecs": "10dlu, labelcompgap, 113dlu, labelcompgap, 158dlu, labelcompgap, 11dlu"
+			"$rowSpecs": "29dlu, linegap, 15dlu, linegap, 106dlu, linegap, 59dlu, linegap, 7dlu"
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 				name: "tabbedPane1"
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
-					"$columnSpecs": "82dlu, labelcompgap, 95dlu, labelcompgap, 77dlu"
-					"$rowSpecs": "18dlu, linegap, 22dlu, linegap, 24dlu, linegap, 52dlu"
+					"$columnSpecs": "5dlu, labelcompgap, 70dlu, labelcompgap, 115dlu, labelcompgap, 70dlu, labelcompgap, 5dlu"
+					"$rowSpecs": "40dlu, linegap, 34dlu, linegap, 71dlu"
 				} ) {
 					name: "panel1"
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "button1"
-						"text": "Get Image"
-						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "getImageActionPerformed", true ) )
-					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-						"gridX": 1
-						"gridY": 3
-					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "button2"
-						"text": "Get File"
-					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-						"gridX": 5
-						"gridY": 3
-					} )
+					"preferredSize": new java.awt.Dimension( 458, 254 )
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JTextArea" ) {
@@ -37,24 +23,38 @@ new FormModel {
 							"text": "Enter URL: "
 						} )
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-						"gridY": 6
+						"gridY": 3
 						"gridWidth": 5
-						"gridHeight": 2
+						"gridHeight": 3
+						"gridX": 3
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button1"
+						"text": "Get Image"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "getImageActionPerformed", true ) )
+					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+						"gridX": 3
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button2"
+						"text": "Get File"
+					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+						"gridX": 7
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "Tab 1"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
-					"$columnSpecs": "44dlu, labelcompgap, 38dlu, labelcompgap, 62dlu, labelcompgap, 29dlu, labelcompgap, 73dlu"
-					"$rowSpecs": "32dlu, linegap, 40dlu, linegap, 38dlu"
+					"$columnSpecs": "5dlu, labelcompgap, 70dlu, labelcompgap, 103dlu, labelcompgap, 29dlu, labelcompgap, 50dlu, labelcompgap, 5dlu"
+					"$rowSpecs": "40dlu, linegap, 39dlu, linegap, 69dlu, linegap, default"
 				} ) {
 					name: "panel2"
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "button3"
 						"text": "View"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "viewImageActionPerformed", true ) )
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-						"gridX": 1
-						"gridY": 1
+						"gridX": 3
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label1"
@@ -74,18 +74,53 @@ new FormModel {
 						"gridX": 9
 						"gridY": 1
 					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane2"
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+							name: "panel3"
+							add( new FormComponent( "com.jformdesigner.designer.wrapper.JGoodiesFormsLabel" ) {
+								name: "imageLabel"
+							}, new FormLayoutConstraints( class java.lang.String ) {
+								"value": "Center"
+							} )
+						} )
+					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+						"gridY": 3
+						"gridHeight": 3
+						"gridX": 3
+						"gridWidth": 7
+					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "Tab 2"
 				} )
 			}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 				"gridX": 3
 				"gridY": 3
-				"gridWidth": 3
-				"gridHeight": 3
+				"gridWidth": 4
+				"gridHeight": 5
 			} )
+			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
+				name: "menuBar1"
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "menu1"
+					"text": "File"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItem1"
+						"text": "Save Image"
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "menu2"
+					"text": "Options"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItem2"
+						"text": "Exit"
+					} )
+				} )
+			}
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 85, 15 )
-			"size": new java.awt.Dimension( 485, 320 )
+			"size": new java.awt.Dimension( 520, 420 )
 		} )
 	}
 }
