@@ -21,7 +21,7 @@ public class Builder extends JFrame {
 
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        //setLocationRelativeTo(null);
         setResizable(false);
     }
 
@@ -30,6 +30,7 @@ public class Builder extends JFrame {
             JOptionPane.showMessageDialog(null, "Loading image...");
             Work.setImage(new URL(textArea1.getText()));
             JOptionPane.showMessageDialog(null, "Picture uploaded!");
+
         } catch (Exception e1) {
             e1.printStackTrace();
             JOptionPane.showMessageDialog(null, "Invalid URL or no internet connection!");
@@ -46,6 +47,37 @@ public class Builder extends JFrame {
         imageLabel.updateUI();
     }
 
+    private void exitMenuItemActionPerformed(ActionEvent e) {
+        System.exit(0);
+    }
+
+    private void getFileActionPerformed(ActionEvent e) {
+        JFileChooser chooser = new JFileChooser();
+        int reply = chooser.showOpenDialog(null);
+        if(reply == JFileChooser.APPROVE_OPTION) Work.setImage(chooser.getSelectedFile());
+    }
+
+    private void saveImageMenuItemActionPerformed(ActionEvent e) {
+        if(Work.getImage()==null)
+        {
+            JOptionPane.showMessageDialog(null, "Please, upload an image!");
+            return;
+        }
+        JFileChooser chooser = new JFileChooser();
+        int reply = chooser.showSaveDialog(null);
+        if(reply == JFileChooser.APPROVE_OPTION) Work.saveImage(chooser.getSelectedFile(), "jpg");
+        JOptionPane.showMessageDialog(null, "Image is ready for viewing!");
+    }
+
+    private void saveImageActionPerformed(ActionEvent e) {
+        saveImageMenuItemActionPerformed(e);
+    }
+
+    private void aboutMenuItemActionPerformed(ActionEvent e) {
+        JOptionPane.showMessageDialog(null, "A program to search, view, and save the new image.\n\n It is necessary to upload a photo via the URL or select an available. In the \"Tab 2\", you can view the selected file or save it.");
+    }
+
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - Aleksandr Sulyma
@@ -54,17 +86,18 @@ public class Builder extends JFrame {
         menu1 = new JMenu();
         menuItem1 = new JMenuItem();
         menu2 = new JMenu();
+        menuItem3 = new JMenuItem();
         menuItem2 = new JMenuItem();
         tabbedPane1 = new JTabbedPane();
         panel1 = new JPanel();
         scrollPane1 = new JScrollPane();
         textArea1 = new JTextArea();
         button1 = new JButton();
+        label2 = compFactory.createLabel("text");
         button2 = new JButton();
         panel2 = new JPanel();
         button3 = new JButton();
-        label1 = new JLabel();
-        comboBox1 = new JComboBox<>();
+        button4 = new JButton();
         scrollPane2 = new JScrollPane();
         panel3 = new JPanel();
         imageLabel = compFactory.createLabel("");
@@ -84,6 +117,7 @@ public class Builder extends JFrame {
 
                 //---- menuItem1 ----
                 menuItem1.setText("Save Image");
+                menuItem1.addActionListener(e -> saveImageMenuItemActionPerformed(e));
                 menu1.add(menuItem1);
             }
             menuBar1.add(menu1);
@@ -92,8 +126,14 @@ public class Builder extends JFrame {
             {
                 menu2.setText("Options");
 
+                //---- menuItem3 ----
+                menuItem3.setText("About");
+                menuItem3.addActionListener(e -> aboutMenuItemActionPerformed(e));
+                menu2.add(menuItem3);
+
                 //---- menuItem2 ----
                 menuItem2.setText("Exit");
+                menuItem2.addActionListener(e -> exitMenuItemActionPerformed(e));
                 menu2.add(menuItem2);
             }
             menuBar1.add(menu2);
@@ -120,9 +160,6 @@ public class Builder extends JFrame {
 
                 //======== scrollPane1 ========
                 {
-
-                    //---- textArea1 ----
-                    textArea1.setText("Enter URL: ");
                     scrollPane1.setViewportView(textArea1);
                 }
                 panel1.add(scrollPane1, CC.xywh(3, 3, 5, 3));
@@ -132,8 +169,13 @@ public class Builder extends JFrame {
                 button1.addActionListener(e -> getImageActionPerformed(e));
                 panel1.add(button1, CC.xy(3, 1));
 
+                //---- label2 ----
+                label2.setText("Enter URL:");
+                panel1.add(label2, CC.xy(5, 1, CC.CENTER, CC.DEFAULT));
+
                 //---- button2 ----
                 button2.setText("Get File");
+                button2.addActionListener(e -> getFileActionPerformed(e));
                 panel1.add(button2, CC.xy(7, 1));
             }
             tabbedPane1.addTab("Tab 1", panel1);
@@ -141,24 +183,18 @@ public class Builder extends JFrame {
             //======== panel2 ========
             {
                 panel2.setLayout(new FormLayout(
-                    "5dlu, $lcgap, 70dlu, $lcgap, 103dlu, $lcgap, 29dlu, $lcgap, 50dlu, $lcgap, 5dlu",
-                    "40dlu, $lgap, 39dlu, $lgap, 69dlu, $lgap, default"));
+                    "7dlu, $lcgap, 70dlu, $lcgap, 115dlu, $lcgap, 70dlu, $lcgap, 5dlu",
+                    "44dlu, $lgap, 39dlu, $lgap, 67dlu, $lgap, default"));
 
                 //---- button3 ----
                 button3.setText("View");
                 button3.addActionListener(e -> viewImageActionPerformed(e));
                 panel2.add(button3, CC.xy(3, 1));
 
-                //---- label1 ----
-                label1.setText("Format: ");
-                panel2.add(label1, CC.xy(7, 1));
-
-                //---- comboBox1 ----
-                comboBox1.setModel(new DefaultComboBoxModel<>(new String[] {
-                    "\"png\"",
-                    "\"jpg\""
-                }));
-                panel2.add(comboBox1, CC.xy(9, 1));
+                //---- button4 ----
+                button4.setText("Save Image");
+                button4.addActionListener(e -> saveImageActionPerformed(e));
+                panel2.add(button4, CC.xy(7, 1));
 
                 //======== scrollPane2 ========
                 {
@@ -170,7 +206,7 @@ public class Builder extends JFrame {
                     }
                     scrollPane2.setViewportView(panel3);
                 }
-                panel2.add(scrollPane2, CC.xywh(3, 3, 7, 3));
+                panel2.add(scrollPane2, CC.xywh(3, 3, 5, 3));
             }
             tabbedPane1.addTab("Tab 2", panel2);
         }
@@ -186,17 +222,18 @@ public class Builder extends JFrame {
     private JMenu menu1;
     private JMenuItem menuItem1;
     private JMenu menu2;
+    private JMenuItem menuItem3;
     private JMenuItem menuItem2;
     private JTabbedPane tabbedPane1;
     private JPanel panel1;
     private JScrollPane scrollPane1;
     private JTextArea textArea1;
     private JButton button1;
+    private JLabel label2;
     private JButton button2;
     private JPanel panel2;
     private JButton button3;
-    private JLabel label1;
-    private JComboBox<String> comboBox1;
+    private JButton button4;
     private JScrollPane scrollPane2;
     private JPanel panel3;
     private JLabel imageLabel;

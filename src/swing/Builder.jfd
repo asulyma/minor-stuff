@@ -20,7 +20,6 @@ new FormModel {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JTextArea" ) {
 							name: "textArea1"
-							"text": "Enter URL: "
 						} )
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridY": 3
@@ -35,9 +34,19 @@ new FormModel {
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridX": 3
 					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.JGoodiesFormsLabel" ) {
+						name: "label2"
+						"textWithMnemonic": "text"
+						"text": "Enter URL:"
+					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+						"gridX": 5
+						"gridY": 1
+						"hAlign": sfield com.jgoodies.forms.layout.CellConstraints CENTER
+					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "button2"
 						"text": "Get File"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "getFileActionPerformed", true ) )
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridX": 7
 					} )
@@ -45,8 +54,8 @@ new FormModel {
 					"title": "Tab 1"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
-					"$columnSpecs": "5dlu, labelcompgap, 70dlu, labelcompgap, 103dlu, labelcompgap, 29dlu, labelcompgap, 50dlu, labelcompgap, 5dlu"
-					"$rowSpecs": "40dlu, linegap, 39dlu, linegap, 69dlu, linegap, default"
+					"$columnSpecs": "7dlu, labelcompgap, 70dlu, labelcompgap, 115dlu, labelcompgap, 70dlu, labelcompgap, 5dlu"
+					"$rowSpecs": "44dlu, linegap, 39dlu, linegap, 67dlu, linegap, default"
 				} ) {
 					name: "panel2"
 					add( new FormComponent( "javax.swing.JButton" ) {
@@ -56,22 +65,12 @@ new FormModel {
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridX": 3
 					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label1"
-						"text": "Format: "
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button4"
+						"text": "Save Image"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "saveImageActionPerformed", true ) )
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridX": 7
-						"gridY": 1
-					} )
-					add( new FormComponent( "javax.swing.JComboBox" ) {
-						name: "comboBox1"
-						"model": new javax.swing.DefaultComboBoxModel {
-							selectedItem: "\"png\""
-							addElement( "\"png\"" )
-							addElement( "\"jpg\"" )
-						}
-					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-						"gridX": 9
 						"gridY": 1
 					} )
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
@@ -88,7 +87,7 @@ new FormModel {
 						"gridY": 3
 						"gridHeight": 3
 						"gridX": 3
-						"gridWidth": 7
+						"gridWidth": 5
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "Tab 2"
@@ -107,14 +106,21 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItem1"
 						"text": "Save Image"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "saveImageMenuItemActionPerformed", true ) )
 					} )
 				} )
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 					name: "menu2"
 					"text": "Options"
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItem3"
+						"text": "About"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aboutMenuItemActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItem2"
 						"text": "Exit"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "exitMenuItemActionPerformed", true ) )
 					} )
 				} )
 			}
