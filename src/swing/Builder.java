@@ -6,8 +6,8 @@ package swing;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Vector;
 import javax.swing.*;
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
@@ -16,6 +16,7 @@ import com.jgoodies.forms.layout.*;
  * @author unknown
  */
 public class Builder extends JFrame {
+
     public Builder() {
         initComponents();
 
@@ -77,6 +78,23 @@ public class Builder extends JFrame {
         JOptionPane.showMessageDialog(null, "A program to search, view, and save the new image.\n\n It is necessary to upload a photo via the URL or select an available. In the \"Tab 2\", you can view the selected file or save it.");
     }
 
+    Vector<String> selectItem = new Vector<>();
+    int i = 0;
+
+    private void addItemInListActionPerformed(ActionEvent e) {
+        selectItem.add("A" + i);
+        i++;
+        list1.updateUI();
+    }
+    private void removeItemInListActionPerformed(ActionEvent e) {
+        try{
+            selectItem.remove(list1.getSelectedIndex());
+            list1.updateUI();
+        }catch (Exception j)
+        {
+            JOptionPane.showMessageDialog(null, "Enter item!");
+        }
+    }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -101,6 +119,12 @@ public class Builder extends JFrame {
         scrollPane2 = new JScrollPane();
         panel3 = new JPanel();
         imageLabel = compFactory.createLabel("");
+        panel4 = new JPanel();
+        label1 = new JLabel();
+        button7 = new JButton();
+        button6 = new JButton();
+        scrollPane3 = new JScrollPane();
+        list1 = new JList(selectItem);
 
         //======== this ========
         Container contentPane = getContentPane();
@@ -209,6 +233,34 @@ public class Builder extends JFrame {
                 panel2.add(scrollPane2, CC.xywh(3, 3, 5, 3));
             }
             tabbedPane1.addTab("Tab 2", panel2);
+
+            //======== panel4 ========
+            {
+                panel4.setLayout(new FormLayout(
+                    "125dlu, $lcgap, 67dlu, $lcgap, 77dlu",
+                    "30dlu, $lgap, 125dlu"));
+
+                //---- label1 ----
+                label1.setText("Example work JList:");
+                panel4.add(label1, CC.xy(1, 1));
+
+                //---- button7 ----
+                button7.setText("Add Item");
+                button7.addActionListener(e -> addItemInListActionPerformed(e));
+                panel4.add(button7, CC.xy(3, 1));
+
+                //---- button6 ----
+                button6.setText("Remove Item");
+                button6.addActionListener(e -> removeItemInListActionPerformed(e));
+                panel4.add(button6, CC.xy(5, 1));
+
+                //======== scrollPane3 ========
+                {
+                    scrollPane3.setViewportView(list1);
+                }
+                panel4.add(scrollPane3, CC.xy(1, 3));
+            }
+            tabbedPane1.addTab("Tab 3", panel4);
         }
         contentPane.add(tabbedPane1, CC.xywh(3, 3, 4, 5));
         pack();
@@ -237,5 +289,11 @@ public class Builder extends JFrame {
     private JScrollPane scrollPane2;
     private JPanel panel3;
     private JLabel imageLabel;
+    private JPanel panel4;
+    private JLabel label1;
+    private JButton button7;
+    private JButton button6;
+    private JScrollPane scrollPane3;
+    private JList list1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
