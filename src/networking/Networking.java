@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
- * Created by local on 21-Feb-17.
+ * A simple example of interaction with the server. The request is sent to the server, then returns.
  */
 public class Networking extends JFrame implements Runnable{
     private static Socket connectiom;
@@ -22,6 +22,7 @@ public class Networking extends JFrame implements Runnable{
     public static void main(String[] args) {
         new Thread(new Networking("Send message")).start();
         new Thread(new Server()).start();
+
     }
     public Networking(String name)
     {
