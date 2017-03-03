@@ -1,5 +1,9 @@
 package chat;
 
+/**
+ * The first setting. Create UI.
+ */
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -23,6 +27,7 @@ public class Client extends JFrame {
         this.address = addr;
         this.port = port;
         createWindow();
+        console("Connecting to: " + addr + "\tPort: " + port + "\tUser: " + name);
     }
 
     private void createWindow() {
@@ -61,12 +66,13 @@ public class Client extends JFrame {
         scrollConstraints.insets = new Insets(0, 7, 0, 0);
         contentPane.add(scrollPane, scrollConstraints);
 
+        //When you press "Enter"
         txtMessage = new JTextField();
         txtMessage.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    //call method(send message)
+                    send(txtMessage.getText());
                 }
             }
         });
@@ -80,10 +86,9 @@ public class Client extends JFrame {
         contentPane.add(txtMessage, gbc_txtMessage);
         txtMessage.setColumns(10);
 
+        //Clicking button "Send"
         btnSend = new JButton("Send");
-        btnSend.addActionListener((e) -> {
-            //call method(send message)
-        });
+        btnSend.addActionListener((e) -> send(txtMessage.getText()));
 
         GridBagConstraints gbc_btnSend = new GridBagConstraints();
         gbc_btnSend.insets = new Insets(0, 0, 0, 5);
@@ -91,5 +96,21 @@ public class Client extends JFrame {
         gbc_btnSend.gridy = 2;
         contentPane.add(btnSend, gbc_btnSend);
         setVisible(true);
+    }
+
+    //Formation of the message.
+    public void send(String message) {
+        if (message.equals("")) return;
+        message = name + ": " + message;
+        console(message);
+        txtMessage.setText("");
+    }
+
+    //Outputting messages.
+    public void console(String message) {
+        //Correct scrolling
+        history.setCaretPosition(history.getDocument().getLength());
+        //Append message
+        history.append(message + "\n\r");
     }
 }
