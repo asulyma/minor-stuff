@@ -2,6 +2,7 @@ package chat;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,6 +21,7 @@ public class Login extends JFrame {
     private JButton btnLogin;
 
     public Login() {
+        // Responsible for how the window will look like.
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -28,13 +30,14 @@ public class Login extends JFrame {
         setResizable(false);
         setTitle("Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(300, 300);
+        setSize(300, 350);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
         setLocationRelativeTo(null);
 
+        // Add items to window.
         txtName = new JTextField();
         txtName.setBounds(79, 60, 142, 26);
         contentPane.add(txtName);
@@ -71,21 +74,39 @@ public class Login extends JFrame {
         contentPane.add(lblPortDesc);
 
         btnLogin = new JButton("Login");
+        btnLogin.setBounds(88, 250, 117, 29);
+        contentPane.add(btnLogin);
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String name = txtName.getText();
                 String address = txtAddress.getText();
-                int port = Integer.parseInt(txtPort.getText());
-                login(name, address, port);
+                int port;
+                try {
+                    port = Integer.parseInt(txtPort.getText());
+                    login(name, address, port);
+                } catch (NumberFormatException e1) {
+                    JOptionPane.showMessageDialog(null, "Enter correct data!");
+                }
             }
         });
-        btnLogin.setBounds(88, 300, 117, 29);
-        contentPane.add(btnLogin);
+
     }
 
+    // Closing the current window and the creation of the client window.
     private void login(String name, String address, int port) {
         dispose();
-        //call method
+        new Client(name, address, port);
+    }
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(() -> {
+            try {
+                Login frame = new Login();
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

@@ -1,5 +1,95 @@
 package chat;
 
-public class Client {
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
+public class Client extends JFrame {
+    private static final long serialVersionUID = 1L;
+
+    private JPanel contentPane;
+    private String name;
+    private String address;
+    private int port;
+    private JTextField txtMessage;
+    private JTextArea history;
+    private JButton btnSend;
+
+    public Client(String name, String addr, int port) {
+        setTitle("Messenger Client");
+        this.name = name;
+        this.address = addr;
+        this.port = port;
+        createWindow();
+    }
+
+    private void createWindow() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(880, 550);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        setResizable(false);
+        setLocationRelativeTo(null);
+
+        GridBagLayout gbl_contentPane = new GridBagLayout();
+        gbl_contentPane.columnWidths = new int[]{16, 857, 7};
+        gbl_contentPane.columnWidths = new int[]{16, 827, 30, 7};
+        gbl_contentPane.rowHeights = new int[]{35, 475, 40};
+        gbl_contentPane.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+        gbl_contentPane.columnWeights = new double[]{1.0, 1.0};
+        gbl_contentPane.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+        contentPane.setLayout(gbl_contentPane);
+
+        history = new JTextArea();
+        history.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(history);
+        GridBagConstraints scrollConstraints = new GridBagConstraints();
+        scrollConstraints.insets = new Insets(0, 0, 5, 5);
+        scrollConstraints.fill = GridBagConstraints.BOTH;
+        scrollConstraints.gridx = 0;
+        scrollConstraints.gridx = 0;
+        scrollConstraints.gridwidth = 3;
+        scrollConstraints.gridheight = 2;
+        scrollConstraints.insets = new Insets(0, 7, 0, 0);
+        contentPane.add(scrollPane, scrollConstraints);
+
+        txtMessage = new JTextField();
+        txtMessage.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    //call method(send message)
+                }
+            }
+        });
+
+        GridBagConstraints gbc_txtMessage = new GridBagConstraints();
+        gbc_txtMessage.insets = new Insets(0, 0, 0, 5);
+        gbc_txtMessage.fill = GridBagConstraints.HORIZONTAL;
+        gbc_txtMessage.gridx = 0;
+        gbc_txtMessage.gridy = 2;
+        gbc_txtMessage.gridwidth = 2;
+        contentPane.add(txtMessage, gbc_txtMessage);
+        txtMessage.setColumns(10);
+
+        btnSend = new JButton("Send");
+        btnSend.addActionListener((e) -> {
+            //call method(send message)
+        });
+
+        GridBagConstraints gbc_btnSend = new GridBagConstraints();
+        gbc_btnSend.insets = new Insets(0, 0, 0, 5);
+        gbc_btnSend.gridx = 2;
+        gbc_btnSend.gridy = 2;
+        contentPane.add(btnSend, gbc_btnSend);
+        setVisible(true);
+    }
 }
