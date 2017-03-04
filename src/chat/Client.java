@@ -4,6 +4,8 @@ package chat;
  * The first setting. Create UI.
  */
 
+import chat.net.Networking;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -21,13 +23,21 @@ public class Client extends JFrame {
     private JTextArea history;
     private JButton btnSend;
 
+    private Networking networking;
+    private boolean connected = false;
+
     public Client(String name, String addr, int port) {
         setTitle("Messenger Client");
         this.name = name;
         this.address = addr;
         this.port = port;
+
+        networking = new Networking(port);
+        connected = networking.openConnection(address);
+
         createWindow();
         console("Connecting to: " + addr + "\tPort: " + port + "\tUser: " + name);
+        if(!connected) console("Connection failed...");
     }
 
     private void createWindow() {
@@ -55,6 +65,7 @@ public class Client extends JFrame {
 
         history = new JTextArea();
         history.setEditable(false);
+        history.setFont(new Font("Arial", Font.PLAIN, 12));
         JScrollPane scrollPane = new JScrollPane(history);
         GridBagConstraints scrollConstraints = new GridBagConstraints();
         scrollConstraints.insets = new Insets(0, 0, 5, 5);
@@ -96,6 +107,8 @@ public class Client extends JFrame {
         gbc_btnSend.gridy = 2;
         contentPane.add(btnSend, gbc_btnSend);
         setVisible(true);
+
+        txtMessage.requestFocusInWindow();
     }
 
     //Formation of the message.
