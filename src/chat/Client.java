@@ -36,8 +36,10 @@ public class Client extends JFrame {
         connected = networking.openConnection(address);
 
         createWindow();
+        String connectionPacket = "/c/"+name;
+        networking.send(connectionPacket.getBytes());
         console("Connecting to: " + addr + "\tPort: " + port + "\tUser: " + name);
-        if(!connected) console("Connection failed...");
+        if (!connected) console("Connection failed...");
     }
 
     private void createWindow() {
@@ -116,6 +118,7 @@ public class Client extends JFrame {
         if (message.equals("")) return;
         message = name + ": " + message;
         console(message);
+        networking.send(message.getBytes());
         txtMessage.setText("");
     }
 
