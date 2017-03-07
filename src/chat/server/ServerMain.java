@@ -15,12 +15,16 @@ public class ServerMain {
     }
 
     public static void main(String[] args) {
-        int port;
+        int port=5576;
+
+        /*
         if (args.length != 1) {
             System.out.println("Usage: java -jar program.jar [port]");
             System.exit(1);
         }
         port = Integer.parseInt(args[0]);
+        */
+
         new ServerMain(port);
     }
 }
