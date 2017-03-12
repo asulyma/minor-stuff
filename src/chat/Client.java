@@ -5,6 +5,7 @@ package chat;
  */
 
 import chat.net.Networking;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -14,6 +15,7 @@ import java.awt.event.KeyEvent;
 
 public class Client extends JFrame {
     private static final long serialVersionUID = 1L;
+    private static Logger log = Logger.getLogger(Client.class.getName());
 
     private JPanel contentPane;
     private String name;
@@ -55,6 +57,7 @@ public class Client extends JFrame {
         setContentPane(contentPane);
         setResizable(false);
         setLocationRelativeTo(null);
+        log.info("Create window...");
 
         GridBagLayout gbl_contentPane = new GridBagLayout();
         gbl_contentPane.columnWidths = new int[]{16, 857, 7};
@@ -111,6 +114,7 @@ public class Client extends JFrame {
         setVisible(true);
 
         txtMessage.requestFocusInWindow();
+        log.info("Window is created.");
     }
 
     //Formation of the message.
@@ -120,6 +124,7 @@ public class Client extends JFrame {
         console(message);
         networking.send(message.getBytes());
         txtMessage.setText("");
+        log.info("Send message.");
     }
 
     //Outputting messages.
