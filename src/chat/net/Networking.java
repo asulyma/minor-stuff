@@ -22,10 +22,7 @@ public class Networking {
         try {
             socket = new DatagramSocket();
             ip = InetAddress.getByName(address);
-        } catch (SocketException e) {
-            e.printStackTrace();
-            return false;
-        } catch (UnknownHostException e) {
+        } catch (SocketException | UnknownHostException e) {
             e.printStackTrace();
             return false;
         }
@@ -47,7 +44,7 @@ public class Networking {
 
 
     public void send(final byte[] data) {
-        send = new Thread(new Runnable() {
+        send = new Thread("Send") {
             public void run() {
                 DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
                 try {
@@ -56,7 +53,7 @@ public class Networking {
                     e.printStackTrace();
                 }
             }
-        });
+        };
         send.start();
     }
 

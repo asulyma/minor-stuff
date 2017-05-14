@@ -6,6 +6,7 @@ package chat;
 
 import chat.net.Networking;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -38,7 +39,7 @@ public class Client extends JFrame {
         connected = networking.openConnection(address);
 
         createWindow();
-        String connectionPacket = "/c/"+name;
+        String connectionPacket = "/c/" + name;
         networking.send(connectionPacket.getBytes());
         console("Connecting to: " + addr + "\tPort: " + port + "\tUser: " + name);
         if (!connected) console("Connection failed...");
