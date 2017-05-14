@@ -6,7 +6,6 @@ package chat;
 
 import chat.net.Networking;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -123,6 +122,7 @@ public class Client extends JFrame {
         if (message.equals("")) return;
         message = name + ": " + message;
         console(message);
+        message = "/m/" + message;
         networking.send(message.getBytes());
         txtMessage.setText("");
         log.info("Send message.");
