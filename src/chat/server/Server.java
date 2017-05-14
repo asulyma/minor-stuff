@@ -7,6 +7,7 @@ package chat.server;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class Server {
     private List<ServerClient> clients = new ArrayList<ServerClient>();
     private int port;
     private DatagramSocket socket;
-    private Thread serverRun, manage, receive;
+    private Thread serverRun, manage, receive, send;
     private boolean running = false;
 
     public Server(int port) {
@@ -25,48 +26,40 @@ public class Server {
             socket = new DatagramSocket(port);
         } catch (SocketException e) {
             e.printStackTrace();
+            return;
         }
-        serverRun = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                running = true;
-                System.out.println("Server started on port " + port);
-                manage();
-                receive();
-            }
+        serverRun = new Thread(() -> {
+            running = true;
+            System.out.println("Server started on port " + port);
+            manage();
+            receive();
         }, "serverRun");
 
         serverRun.start();
     }
 
     private void manage() {
-        manage = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (running) {
-
-                }
+        manage = new Thread(() -> {
+            while (running) {
+                //Managing
             }
         }, "manage");
         manage.start();
     }
 
     private void receive() {
-        receive = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (running) {
-                    byte[] data = new byte[1024];
-                    DatagramPacket packet = new DatagramPacket(data, data.length);
-                    try {
-                        socket.receive(packet);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    process(packet);
-                    clients.add(new ServerClient("Sulyma", packet.getAddress(), packet.getPort(), 3434));
-                    System.out.println(clients.get(0).address.toString() + ":" + packet.getPort());
+        receive = new Thread(() -> {
+            while (running) {
+                byte[] data = new byte[1024];
+                DatagramPacket packet = new DatagramPacket(data, data.length);
+                try {
+                    socket.receive(packet);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                process(packet);
+                clients.add(new ServerClient("Sasha", packet.getAddress(), packet.getPort(), 50));
+                System.out.println(clients.get(0).address.toString() + ":" + clients.get(0).port);
             }
         }, "receive");
         receive.start();
@@ -79,8 +72,30 @@ public class Server {
             System.out.println("ID:" + id);
             clients.add(new ServerClient(str.substring(3, str.length()), packet.getAddress(), packet.getPort(), id));
             System.out.println(str.substring(3, str.length()));
+        } else if (str.startsWith("/m/")) {
+            sendToAll(str);
         } else {
             System.out.println(str);
         }
+    }
+
+    private void sendToAll(String message) {
+        for (int i = 0; i < clients.size(); i++) {
+            ServerClient serverClient = clients.get(i);
+            send(message.getBytes(), serverClient.address, serverClient.port);
+        }
+    }
+
+    private void send(final byte[] data, final InetAddress addr, final int port) {
+        send = new Thread("Send") {
+            public void run() {
+                DatagramPacket packet = new DatagramPacket(data, data.length, addr, port);
+                try {
+                    socket.send(packet);
+                } catch (IOException e) {
+                }
+            }
+        };
+        send.start();
     }
 }
