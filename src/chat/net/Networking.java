@@ -13,6 +13,16 @@ public class Networking {
     private InetAddress ip = null;
     private Thread send;
     private int port;
+    private int ID = -1;
+
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
 
     public Networking(int port) {
         this.port = port;

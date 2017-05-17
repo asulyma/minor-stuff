@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class Client extends JFrame {
+public class Client extends JFrame implements Runnable {
     private static final long serialVersionUID = 1L;
     private static Logger log = Logger.getLogger(Client.class.getName());
 
@@ -27,6 +27,10 @@ public class Client extends JFrame {
 
     private Networking networking;
     private boolean connected = false;
+
+    private Thread listen, run;
+    private boolean running = false;
+
 
     public Client(String name, String addr, int port) {
         setTitle("Messenger Client");
@@ -42,6 +46,10 @@ public class Client extends JFrame {
         networking.send(connectionPacket.getBytes());
         console("Connecting to: " + addr + "\tPort: " + port + "\tUser: " + name);
         if (!connected) console("Connection failed...");
+
+        running = true;
+        run = new Thread(this, "Running");
+        run.start();
     }
 
     private void createWindow() {
@@ -128,11 +136,33 @@ public class Client extends JFrame {
         log.info("Send message.");
     }
 
+    //Transferring the connection to the server.
+    public void listen() {
+        listen = new Thread("Listen") {
+            public void run() {
+                while (running) {
+                    String message = networking.receive();
+                    if (message.startsWith("/c/")) {
+                        networking.setID(Integer.parseInt(message.split("/c/|/e/")[1]));
+                        console("Successfully connected to server! ID: " + networking.getID());
+                    }
+                }
+            }
+        };
+        listen.start();
+    }
+
     //Outputting messages.
+
     public void console(String message) {
         //Correct scrolling
         history.setCaretPosition(history.getDocument().getLength());
         //Append message
         history.append(message + "\n\r");
+    }
+
+    @Override
+    public void run() {
+        listen();
     }
 }

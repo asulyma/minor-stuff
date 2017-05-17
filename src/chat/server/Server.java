@@ -65,6 +65,11 @@ public class Server {
         receive.start();
     }
 
+    private void send(String message, InetAddress address, int port) {
+        message += "/e/";
+        send(message.getBytes(), address, port);
+    }
+
     private void process(DatagramPacket packet) {
         String str = new String(packet.getData());
         if (str.startsWith("/c/")) {
@@ -72,6 +77,8 @@ public class Server {
             System.out.println("ID:" + id);
             clients.add(new ServerClient(str.substring(3, str.length()), packet.getAddress(), packet.getPort(), id));
             System.out.println(str.substring(3, str.length()));
+            String ID = "/c/" + id;
+            send(ID, packet.getAddress(), packet.getPort());
         } else if (str.startsWith("/m/")) {
             sendToAll(str);
         } else {
