@@ -129,7 +129,7 @@ public class Client extends JFrame implements Runnable {
     public void send(String message) {
         if (message.equals("")) return;
         message = name + ": " + message;
-        console(message);
+        //console(message);
         message = "/m/" + message;
         networking.send(message.getBytes());
         txtMessage.setText("");
@@ -145,6 +145,10 @@ public class Client extends JFrame implements Runnable {
                     if (message.startsWith("/c/")) {
                         networking.setID(Integer.parseInt(message.split("/c/|/e/")[1]));
                         console("Successfully connected to server! ID: " + networking.getID());
+                        log.info("Successfully connected to server! ID: " + networking.getID());
+                    } else if (message.startsWith("/m/")) {
+                        String text = message.split("/m/|/e/")[1];
+                        console(text);
                     }
                 }
             }
