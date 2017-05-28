@@ -39,6 +39,15 @@ public class Networking {
         return true;
     }
 
+    public void close() {
+        new Thread() {
+            public void run() {
+                synchronized (socket) {
+                    socket.close();
+                }
+            }
+        }.start();
+    }
 
     public String receive() {
         byte[] data = new byte[1024];
@@ -48,8 +57,7 @@ public class Networking {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String message = new String(packet.getData());
-        return message;
+        return new String(packet.getData());
     }
 
 

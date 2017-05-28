@@ -9,6 +9,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class Server {
     private void manage() {
         manage = new Thread(() -> {
             while (running) {
-                //Managing
+                //System.out.println(clients.size());
             }
         }, "manage");
         manage.start();
@@ -79,9 +80,29 @@ public class Server {
             send(ID, packet.getAddress(), packet.getPort());
         } else if (str.startsWith("/m/")) {
             sendToAll(str);
+        } else if (str.startsWith("/d/")) {
+            String id = str.split("/d/|/e/")[1];
+            disconnect(Integer.parseInt(id), true);
         } else {
             System.out.println(str);
         }
+    }
+
+    private void disconnect(int id, boolean status) {
+        ServerClient s = null;
+        for (int i = 0; i < clients.size(); i++) {
+            if (clients.get(i).getID() == id) {
+                s = clients.get(i);
+                clients.remove(i);
+                break;
+            }
+        }
+        String mess = "";
+        if (status) {
+            mess = "Client " + s.name + " (" + s.getID() + ") @ " + s.address.toString() + ":" + s.port + " disconnected.";
+        } else
+            mess = "Client " + s.name + " (" + s.getID() + ") @ " + s.address.toString() + ":" + s.port + " time out.";
+        System.out.println(mess);
     }
 
     private void sendToAll(String message) {

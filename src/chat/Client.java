@@ -12,6 +12,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Client extends JFrame implements Runnable {
     private static final long serialVersionUID = 1L;
@@ -32,7 +34,7 @@ public class Client extends JFrame implements Runnable {
     private boolean running = false;
 
 
-    public Client(String name, String addr, int port) {
+    Client(String name, String addr, int port) {
         setTitle("Messenger Client");
         this.name = name;
         this.address = addr;
@@ -58,7 +60,7 @@ public class Client extends JFrame implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(880, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -96,7 +98,7 @@ public class Client extends JFrame implements Runnable {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    send(txtMessage.getText());
+                    send(txtMessage.getText(), true);
                 }
             }
         });
@@ -112,13 +114,25 @@ public class Client extends JFrame implements Runnable {
 
         //Clicking button "Send"
         btnSend = new JButton("Send");
-        btnSend.addActionListener((e) -> send(txtMessage.getText()));
+        btnSend.addActionListener((e) -> send(txtMessage.getText(), true));
 
         GridBagConstraints gbc_btnSend = new GridBagConstraints();
         gbc_btnSend.insets = new Insets(0, 0, 0, 5);
         gbc_btnSend.gridx = 2;
         gbc_btnSend.gridy = 2;
         contentPane.add(btnSend, gbc_btnSend);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                String disconnect = "/d/" + networking.getID() + "/e/";
+                send(disconnect, false);
+                networking.close();
+                running = false;
+                log.info("Closed!");
+            }
+        });
+
         setVisible(true);
 
         txtMessage.requestFocusInWindow();
@@ -126,11 +140,13 @@ public class Client extends JFrame implements Runnable {
     }
 
     //Formation of the message.
-    public void send(String message) {
+    private void send(String message, boolean text) {
         if (message.equals("")) return;
-        message = name + ": " + message;
-        //console(message);
-        message = "/m/" + message;
+
+        if (text) {
+            message = name + ": " + message;
+            message = "/m/" + message;
+        }
         networking.send(message.getBytes());
         txtMessage.setText("");
         log.info("Send message.");
