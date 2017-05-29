@@ -153,7 +153,7 @@ public class Client extends JFrame implements Runnable {
     }
 
     //Transferring the connection to the server.
-    public void listen() {
+    private void listen() {
         listen = new Thread("Listen") {
             public void run() {
                 while (running) {
@@ -174,7 +174,7 @@ public class Client extends JFrame implements Runnable {
 
     //Outputting messages.
 
-    public void console(String message) {
+    private void console(String message) {
         //Correct scrolling
         history.setCaretPosition(history.getDocument().getLength());
         //Append message

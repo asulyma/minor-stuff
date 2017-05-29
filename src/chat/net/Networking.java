@@ -57,9 +57,12 @@ public class Networking {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //byte[] tmp = packet.getData();
+        //String tmp2 = new String(packet.getData());
+        //TODO BUG THIS
         return new String(packet.getData());
     }
-
 
     public void send(final byte[] data) {
         send = new Thread("Send") {
