@@ -9,17 +9,19 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
 
-    private List<ServerClient> clients = new ArrayList<ServerClient>();
+    private List<ServerClient> clients = new ArrayList<>();
+    private List<Integer> clientResponce = new ArrayList<>();
     private int port;
     private DatagramSocket socket;
     private Thread serverRun, manage, receive, send;
     private boolean running = false;
+
+    private final int MAX_ATTEMPTS = 5;
 
     public Server(int port) {
         this.port = port;
@@ -42,7 +44,25 @@ public class Server {
     private void manage() {
         manage = new Thread(() -> {
             while (running) {
-                //System.out.println(clients.size());
+                sendToAll("/i/server");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                for (int i = 0; i < clients.size(); i++) {
+                    ServerClient c = clients.get(i);
+                    if (!clientResponce.contains(clients.get(i).getID())) {
+                        if (c.attempt >= MAX_ATTEMPTS) {
+                            disconnect(c.getID(), false);
+                        } else {
+                            c.attempt++;
+                        }
+                    } else {
+                        clientResponce.remove(new Integer(c.getID()));
+                        c.attempt = 0;
+                    }
+                }
             }
         }, "manage");
         manage.start();
@@ -83,6 +103,8 @@ public class Server {
         } else if (str.startsWith("/d/")) {
             String id = str.split("/d/|/e/")[1];
             disconnect(Integer.parseInt(id), true);
+        } else if (str.startsWith("/i/")) {
+            clientResponce.add(Integer.parseInt(str.split("/i/|/e/")[1]));
         } else {
             System.out.println(str);
         }
@@ -97,7 +119,7 @@ public class Server {
                 break;
             }
         }
-        String mess = "";
+        String mess;
         if (status) {
             mess = "Client " + s.name + " (" + s.getID() + ") @ " + s.address.toString() + ":" + s.port + " disconnected.";
         } else
