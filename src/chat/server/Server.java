@@ -11,6 +11,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Server {
 
@@ -19,7 +20,7 @@ public class Server {
     private int port;
     private DatagramSocket socket;
     private Thread serverRun, manage, receive, send;
-    private boolean running = false;
+    private boolean running = false, row = false;
 
     private final int MAX_ATTEMPTS = 5;
 
@@ -36,6 +37,26 @@ public class Server {
             System.out.println("Server started on port " + port);
             manage();
             receive();
+            Scanner scanner = new Scanner(System.in);
+            while (running) {
+                String text = scanner.nextLine();
+                if (!text.startsWith("/")) {
+                    sendToAll("/m/Server: " + text + "/e/");
+                    continue;
+                }
+                text = text.substring(1);
+                if (text.equals("row")) {                                   //server commands
+                    row = !row;
+                } else if (text.equals("clients")) {                        //server commands
+                    System.out.println("Clients:");
+                    System.out.println("========");
+                    for (int i = 0; i < clients.size(); i++) {
+                        ServerClient c = clients.get(i);
+                        System.out.println(c.name + "( " + c.getID() + " ): " + c.address.toString() + ":" + c.port);
+                    }
+                    System.out.println("========");
+                }
+            }
         }, "serverRun");
 
         serverRun.start();
@@ -91,6 +112,7 @@ public class Server {
 
     private void process(DatagramPacket packet) {
         String str = new String(packet.getData());
+        if (row) System.out.println(str);
         if (str.startsWith("/c/")) {
             int id = UniqueID.getID();
             System.out.println("ID:" + id);
@@ -128,6 +150,12 @@ public class Server {
     }
 
     private void sendToAll(String message) {
+        if (message.startsWith("/m/")) {
+            String text = message.substring(3);
+            text = text.split("/e/")[0];
+            System.out.println(message);
+        }
+
         for (int i = 0; i < clients.size(); i++) {
             ServerClient serverClient = clients.get(i);
             send(message.getBytes(), serverClient.address, serverClient.port);
