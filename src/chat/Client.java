@@ -44,7 +44,7 @@ public class Client extends JFrame implements Runnable {
         connected = networking.openConnection(address);
 
         createWindow();
-        String connectionPacket = "/c/" + name;
+        String connectionPacket = "/c/" + name + "/e/";
         networking.send(connectionPacket.getBytes());
         console("Connecting to: " + addr + "\tPort: " + port + "\tUser: " + name);
         if (!connected) console("Connection failed...");
@@ -146,10 +146,10 @@ public class Client extends JFrame implements Runnable {
         if (text) {
             message = name + ": " + message;
             message = "/m/" + message;
+            txtMessage.setText("");
+            log.info("Send message.");
         }
         networking.send(message.getBytes());
-        txtMessage.setText("");
-        log.info("Send message.");
     }
 
     //Transferring the connection to the server.

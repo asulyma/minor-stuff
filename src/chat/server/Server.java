@@ -162,13 +162,16 @@ public class Server {
 
     private void disconnect(int id, boolean status) {
         ServerClient s = null;
+        boolean existed = false;
         for (int i = 0; i < clients.size(); i++) {
             if (clients.get(i).getID() == id) {
                 s = clients.get(i);
                 clients.remove(i);
+                existed = true;
                 break;
             }
         }
+        if(!existed) return;
         String mess;
         if (status) {
             mess = "Client " + s.name + " (" + s.getID() + ") @ " + s.address.toString() + ":" + s.port + " disconnected.";
