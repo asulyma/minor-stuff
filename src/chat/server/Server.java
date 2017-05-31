@@ -24,7 +24,7 @@ public class Server {
 
     private final int MAX_ATTEMPTS = 5;
 
-    public Server(int port) {
+    Server(int port) {
         this.port = port;
         try {
             socket = new DatagramSocket(port);
@@ -50,11 +50,39 @@ public class Server {
                 } else if (text.equals("clients")) {                        //server commands
                     System.out.println("Clients:");
                     System.out.println("========");
-                    for (int i = 0; i < clients.size(); i++) {
-                        ServerClient c = clients.get(i);
+                    for (ServerClient c : clients) {
                         System.out.println(c.name + "( " + c.getID() + " ): " + c.address.toString() + ":" + c.port);
                     }
                     System.out.println("========");
+                } else if (text.startsWith("kick")) {
+                    String name = text.split(" ")[1];
+                    int id = -1;
+                    boolean num = true;
+                    try {
+                        id = Integer.parseInt(name);
+                    } catch (NumberFormatException e) {
+                        num = false;
+                    }
+                    if (num) {
+                        boolean exists = false;
+                        for (ServerClient client : clients) {
+                            if (client.getID() == id) {
+                                exists = true;
+                                break;
+                            }
+                        }
+                        if (exists)
+                            disconnect(id, true);
+                        else
+                            System.out.println("Client " + id + " doesnt exist! Check ID.");
+                    } else {
+                        for (ServerClient c : clients) {
+                            if (name.equals(c.name)) {
+                                disconnect(c.getID(), true);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }, "serverRun");
@@ -71,9 +99,8 @@ public class Server {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                for (int i = 0; i < clients.size(); i++) {
-                    ServerClient c = clients.get(i);
-                    if (!clientResponce.contains(clients.get(i).getID())) {
+                for (ServerClient c : clients) {
+                    if (!clientResponce.contains(c.getID())) {
                         if (c.attempt >= MAX_ATTEMPTS) {
                             disconnect(c.getID(), false);
                         } else {
@@ -115,9 +142,10 @@ public class Server {
         if (row) System.out.println(str);
         if (str.startsWith("/c/")) {
             int id = UniqueID.getID();
-            System.out.println("ID:" + id);
-            clients.add(new ServerClient(str.substring(3, str.length()), packet.getAddress(), packet.getPort(), id));
-            System.out.println(str.substring(3, str.length()));
+            String name = str.split("/c/|/e/")[1];
+
+            System.out.println(name + " (" + id + ") connected.");
+            clients.add(new ServerClient(name, packet.getAddress(), packet.getPort(), id));
             String ID = "/c/" + id;
             send(ID, packet.getAddress(), packet.getPort());
         } else if (str.startsWith("/m/")) {
@@ -156,8 +184,7 @@ public class Server {
             System.out.println(message);
         }
 
-        for (int i = 0; i < clients.size(); i++) {
-            ServerClient serverClient = clients.get(i);
+        for (ServerClient serverClient : clients) {
             send(message.getBytes(), serverClient.address, serverClient.port);
         }
     }
@@ -169,6 +196,7 @@ public class Server {
                 try {
                     socket.send(packet);
                 } catch (IOException e) {
+                    System.out.println("Sending error!");
                 }
             }
         };
