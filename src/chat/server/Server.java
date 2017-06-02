@@ -94,6 +94,7 @@ public class Server {
         manage = new Thread(() -> {
             while (running) {
                 sendToAll("/i/server");
+                sendStatus();
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -114,6 +115,16 @@ public class Server {
             }
         }, "manage");
         manage.start();
+    }
+
+    private void sendStatus() {
+        if (clients.size() <= 0) return;
+        StringBuilder users = new StringBuilder("/u/");
+        for (int i = 0; i < clients.size() - 1; i++) {
+            users.append(clients.get(i).name).append("/n/");
+        }
+        users.append(clients.get(clients.size() - 1).name).append("/e/");
+        sendToAll(users.toString());
     }
 
     private void receive() {
@@ -171,7 +182,7 @@ public class Server {
                 break;
             }
         }
-        if(!existed) return;
+        if (!existed) return;
         String mess;
         if (status) {
             mess = "Client " + s.name + " (" + s.getID() + ") @ " + s.address.toString() + ":" + s.port + " disconnected.";

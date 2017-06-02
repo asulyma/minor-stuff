@@ -14,10 +14,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
+import java.util.Arrays;
 
 public class Client extends JFrame implements Runnable {
     private static final long serialVersionUID = 1L;
@@ -36,10 +34,9 @@ public class Client extends JFrame implements Runnable {
     private JMenuBar menuBar;
 
     private Networking networking;
-    private boolean connected = false;
-
+    private boolean connected = false, running = false;
     private Thread listen, run;
-    private boolean running = false;
+    private OnlineUsers onlineUsers;
 
 
     Client(String name, String addr, int port) {
@@ -48,6 +45,7 @@ public class Client extends JFrame implements Runnable {
         this.address = addr;
         this.port = port;
 
+        onlineUsers = new OnlineUsers();
         networking = new Networking(port);
         connected = networking.openConnection(address);
 
@@ -151,9 +149,9 @@ public class Client extends JFrame implements Runnable {
         mnFile.add(menuItemOnline);
         menuItemExit = new JMenuItem("Exit");
         mnFile.add(menuItemExit);
+        menuItemOnline.addActionListener(e -> onlineUsers.setVisible(true));
 
         setVisible(true);
-
         txtMessage.requestFocusInWindow();
         log.info("Window is created.");
     }
@@ -188,6 +186,9 @@ public class Client extends JFrame implements Runnable {
                     } else if (message.startsWith("/i/")) {
                         String text = "/i/" + networking.getID() + "/e/";
                         send(text, false);
+                    } else if (message.startsWith("/u/")) {
+                        String[] users = message.split("/u/|/n/|/e/");
+                        onlineUsers.update(Arrays.copyOfRange(users, 1, users.length - 1));
                     }
                 }
             }
