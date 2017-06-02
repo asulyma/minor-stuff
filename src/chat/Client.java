@@ -9,6 +9,10 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -26,6 +30,10 @@ public class Client extends JFrame implements Runnable {
     private JTextField txtMessage;
     private JTextArea history;
     private JButton btnSend;
+
+    private JMenu mnFile;
+    private JMenuItem menuItemOnline, menuItemExit;
+    private JMenuBar menuBar;
 
     private Networking networking;
     private boolean connected = false;
@@ -55,6 +63,7 @@ public class Client extends JFrame implements Runnable {
     }
 
     private void createWindow() {
+        log.info("Create window...");
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -62,16 +71,15 @@ public class Client extends JFrame implements Runnable {
         }
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(880, 550);
+        setLocationRelativeTo(null);
+
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
-        //setResizable(false);
-        setLocationRelativeTo(null);
-        log.info("Create window...");
 
         GridBagLayout gbl_contentPane = new GridBagLayout();
-        gbl_contentPane.columnWidths = new int[]{16, 827, 30, 7};
-        gbl_contentPane.rowHeights = new int[]{35, 475, 40};
+        gbl_contentPane.columnWidths = new int[]{28, 815, 30, 7};
+        gbl_contentPane.rowHeights = new int[]{25, 475, 40};
         contentPane.setLayout(gbl_contentPane);
 
         history = new JTextArea();
@@ -82,12 +90,12 @@ public class Client extends JFrame implements Runnable {
         scrollConstraints.insets = new Insets(0, 0, 5, 5);
         scrollConstraints.fill = GridBagConstraints.BOTH;
         scrollConstraints.gridx = 0;
-        scrollConstraints.gridx = 0;
+        scrollConstraints.gridy = 0;
         scrollConstraints.gridwidth = 3;
         scrollConstraints.gridheight = 2;
         scrollConstraints.weightx = 1;
         scrollConstraints.weighty = 1;
-        scrollConstraints.insets = new Insets(0, 7, 0, 0);
+        scrollConstraints.insets = new Insets(0, 5, 0, 0);
         contentPane.add(scrollPane, scrollConstraints);
 
         //When you press "Enter"
@@ -134,6 +142,15 @@ public class Client extends JFrame implements Runnable {
                 log.info("Closed!");
             }
         });
+
+        menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+        mnFile = new JMenu("File");
+        menuBar.add(mnFile);
+        menuItemOnline = new JMenuItem("Online");
+        mnFile.add(menuItemOnline);
+        menuItemExit = new JMenuItem("Exit");
+        mnFile.add(menuItemExit);
 
         setVisible(true);
 
