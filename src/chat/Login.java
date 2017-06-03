@@ -3,8 +3,6 @@ package chat;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Login extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -29,7 +27,7 @@ public class Login extends JFrame {
         }
         setResizable(false);
         setTitle("Login");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(300, 350);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -76,18 +74,21 @@ public class Login extends JFrame {
         btnLogin = new JButton("Login");
         btnLogin.setBounds(88, 250, 117, 29);
         contentPane.add(btnLogin);
-        btnLogin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = txtName.getText();
-                String address = txtAddress.getText();
-                int port;
-                try {
-                    port = Integer.parseInt(txtPort.getText());
-                    login(name, address, port);
-                } catch (NumberFormatException e1) {
-                    JOptionPane.showMessageDialog(null, "Enter correct data!");
-                }
+        btnLogin.addActionListener(e -> {
+            String name = txtName.getText();
+            String address = txtAddress.getText();
+            String tmpPort = txtPort.getText();
+            if (tmpPort.length() != 4) {
+                JOptionPane.showMessageDialog(null, "Enter correct port!");
+                txtPort.setText("");
+                return;
+            }
+            int port;
+            try {
+                port = Integer.parseInt(txtPort.getText());
+                login(name, address, port);
+            } catch (NumberFormatException e1) {
+                JOptionPane.showMessageDialog(null, "Enter correct data!");
             }
         });
 
