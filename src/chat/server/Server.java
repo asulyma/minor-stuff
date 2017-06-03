@@ -4,6 +4,8 @@ package chat.server;
  * This class is responsible for creating and server logic.
  */
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -13,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Server {
-
+class Server {
+    private static Logger log = Logger.getLogger(Server.class.getName());
     private List<ServerClient> clients = new ArrayList<>();
     private List<Integer> clientResponce = new ArrayList<>();
     private int port;
     private DatagramSocket socket;
     private Thread serverRun, manage, receive, send;
-    private boolean running = false, row = false;
+    private boolean running = false, raw = false;
 
     private final int MAX_ATTEMPTS = 5;
 
@@ -35,6 +37,7 @@ public class Server {
         serverRun = new Thread(() -> {
             running = true;
             System.out.println("Server started on port " + port);
+            log.info("Server started on port " + port);
             manage();
             receive();
             Scanner scanner = new Scanner(System.in);
@@ -45,8 +48,10 @@ public class Server {
                     continue;
                 }
                 text = text.substring(1);
-                if (text.equals("row")) {                                   //server commands
-                    row = !row;
+                if (text.equals("raw")) {                                   //server commands
+                    if (raw) System.out.println("Raw mode off");
+                    else System.out.println("Raw mode on");
+                    raw = !raw;
                 } else if (text.equals("clients")) {                        //server commands
                     System.out.println("Clients:");
                     System.out.println("========");
@@ -74,7 +79,7 @@ public class Server {
                         if (exists)
                             disconnect(id, true);
                         else
-                            System.out.println("Client " + id + " doesnt exist! Check ID.");
+                            System.out.println("Client " + id + " does not exist! Check ID.");
                     } else {
                         for (ServerClient c : clients) {
                             if (name.equals(c.name)) {
@@ -83,6 +88,13 @@ public class Server {
                             }
                         }
                     }
+                } else if (text.equals("quit")) {
+                    quit();
+                } else if (text.equals("help")) {
+                    printHelp();
+                } else {
+                    System.out.println("Incorrect command!");
+                    printHelp();
                 }
             }
         }, "serverRun");
@@ -127,6 +139,24 @@ public class Server {
         sendToAll(users.toString());
     }
 
+    private void quit() {
+        for (ServerClient client : clients) {
+            disconnect(client.getID(), true);
+        }
+        running = false;
+        socket.close();
+    }
+
+    private void printHelp() {
+        System.out.println("Here is a list of all available commands:");
+        System.out.println("=========================================");
+        System.out.println("/raw - enabled raw mode");
+        System.out.println("/clients - display all connected clients");
+        System.out.println("/kick [users ID or username] - kicks a user");
+        System.out.println("/help - show this help message");
+        System.out.println("/quit - shut down this server");
+    }
+
     private void receive() {
         receive = new Thread(() -> {
             while (running) {
@@ -134,6 +164,7 @@ public class Server {
                 DatagramPacket packet = new DatagramPacket(data, data.length);
                 try {
                     socket.receive(packet);
+                } catch (SocketException e) {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -150,7 +181,7 @@ public class Server {
 
     private void process(DatagramPacket packet) {
         String str = new String(packet.getData());
-        if (row) System.out.println(str);
+        if (raw) System.out.println(str);
         if (str.startsWith("/c/")) {
             int id = UniqueID.getID();
             String name = str.split("/c/|/e/")[1];
@@ -186,6 +217,7 @@ public class Server {
         String mess;
         if (status) {
             mess = "Client " + s.name + " (" + s.getID() + ") @ " + s.address.toString() + ":" + s.port + " disconnected.";
+            log.info("Client " + s.name + " (" + s.getID() + ") @ " + s.address.toString() + ":" + s.port + " disconnected.");
         } else
             mess = "Client " + s.name + " (" + s.getID() + ") @ " + s.address.toString() + ":" + s.port + " time out.";
         System.out.println(mess);
