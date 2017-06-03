@@ -29,10 +29,6 @@ public class Client extends JFrame implements Runnable {
     private JTextArea history;
     private JButton btnSend;
 
-    private JMenu mnFile;
-    private JMenuItem menuItemOnline, menuItemExit;
-    private JMenuBar menuBar;
-
     private Networking networking;
     private boolean connected = false, running = false;
     private Thread listen, run;
@@ -61,7 +57,7 @@ public class Client extends JFrame implements Runnable {
     }
 
     private void createWindow() {
-        log.info("Create window...");
+        log.info("User: " + name + ". Create window...");
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -137,23 +133,22 @@ public class Client extends JFrame implements Runnable {
                 send(disconnect, false);
                 networking.close();
                 running = false;
-                log.info("Closed!");
             }
         });
 
-        menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
-        mnFile = new JMenu("File");
+        JMenu mnFile = new JMenu("File");
         menuBar.add(mnFile);
-        menuItemOnline = new JMenuItem("Online");
+        JMenuItem menuItemOnline = new JMenuItem("Online");
         mnFile.add(menuItemOnline);
-        menuItemExit = new JMenuItem("Exit");
-        mnFile.add(menuItemExit);
+        JMenuItem menuItemAbout = new JMenuItem("About");
+        mnFile.add(menuItemAbout);
         menuItemOnline.addActionListener(e -> onlineUsers.setVisible(true));
 
         setVisible(true);
         txtMessage.requestFocusInWindow();
-        log.info("Window is created.");
+        log.info("User: " + name + ". Window is created.");
     }
 
     //Formation of the message.
@@ -162,9 +157,9 @@ public class Client extends JFrame implements Runnable {
 
         if (text) {
             message = name + ": " + message;
-            message = "/m/" + message;
+            message = "/m/" + message + "/e/";
             txtMessage.setText("");
-            log.info("Send message.");
+            //log.info("User: " + name + ". Send message.");
         }
         networking.send(message.getBytes());
     }
@@ -178,7 +173,7 @@ public class Client extends JFrame implements Runnable {
                     if (message.startsWith("/c/")) {
                         networking.setID(Integer.parseInt(message.split("/c/|/e/")[1]));
                         console("Successfully connected to server! ID: " + networking.getID());
-                        log.info("Successfully connected to server! ID: " + networking.getID());
+                        log.info("User: " + name + ". Successfully connected to server! ID: " + networking.getID());
                     } else if (message.startsWith("/m/")) {
                         String text = message.substring(3);
                         text = text.split("/e/")[0];

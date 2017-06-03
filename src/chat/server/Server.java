@@ -97,6 +97,7 @@ class Server {
                     printHelp();
                 }
             }
+            scanner.close();        //warning
         }, "serverRun");
 
         serverRun.start();
