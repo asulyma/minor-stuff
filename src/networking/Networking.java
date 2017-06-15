@@ -25,12 +25,12 @@ public class Networking extends JFrame implements Runnable {
 
     }
 
-    public Networking(String name) {
+    Networking(String name) {
         super(name);
         setLayout(new FlowLayout());
         setVisible(true);
         setSize(300, 200);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
 
@@ -57,6 +57,7 @@ public class Networking extends JFrame implements Runnable {
                 JOptionPane.showMessageDialog(null, input.readObject());
             }
         } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -65,6 +66,7 @@ public class Networking extends JFrame implements Runnable {
             output.flush();
             output.writeObject(obj);
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
