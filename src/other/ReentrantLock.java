@@ -1,5 +1,7 @@
 package other;
 
+import java.util.concurrent.locks.Lock;
+
 public class ReentrantLock {
     public static void main(String[] args) throws InterruptedException {
         Resource resource = new Resource();
@@ -28,13 +30,16 @@ public class ReentrantLock {
 
 class Resource {
     int i;
+    private Lock lock = new java.util.concurrent.locks.ReentrantLock();
 
     void changeI() {
+        lock.lock();
         int i = this.i;
         if (Thread.currentThread().getName().equals("one")) {
             Thread.yield();
         }
         i++;
         this.i = i;
+        lock.unlock();
     }
 }
