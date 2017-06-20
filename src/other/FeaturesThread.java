@@ -11,6 +11,7 @@ public class FeaturesThread {
     private static Callable<Integer> callable = new MyCallable();
     private static FutureTask<Integer> futureTask = new FutureTask<>(callable);
     private static ExecutorService executorService = Executors.newFixedThreadPool(2);
+    private static ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
@@ -39,11 +40,17 @@ public class FeaturesThread {
         /** Pool потоков
          * Повышенная производительность, расход ресурсов минимум
          * submit() - добавление в пул
-         * shutdown() - ожидание завершения и закрытие пула.
+         * shutdown() - ожидание завершения и закрытие пула
          */
         executorService.submit(new Pool());
         executorService.shutdown();
 
+        /** Запуск потока через определённое время
+         * Указываем через какое время должен произойти запуст потока
+         * shutdown() - ожидание завершения и закрытие пула
+         */
+        scheduledExecutorService.schedule(new Pool(), 3, TimeUnit.SECONDS);
+        scheduledExecutorService.shutdown();
     }
 
     static class MyThread extends Thread {
