@@ -1,19 +1,41 @@
 package other;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
 public class FeaturesThread {
-    static Lock lock = new java.util.concurrent.locks.ReentrantLock();
-    static int money = 0;
-    static Condition condition = lock.newCondition();
+    private static Lock lock = new java.util.concurrent.locks.ReentrantLock();
+    private static int money = 0;
+    private static Condition condition = lock.newCondition();
+    private static Callable<Integer> callable = new MyCallable();
+    private static FutureTask<Integer> futureTask = new FutureTask<>(callable);
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+
+        /** Пример реализации Lock
+         * Лочит нить, аналог synchronized, методом tryLock() проверяет доступна(занята) ли нить
+         */
         //new MyThread().start();
         //new MyThreadSecond().start();
 
-        new MoneyRemove().start();
-        new MoneyAdd().start();
+        /** Пример реализации Condition
+         * Поток должен получить сигнал о готовности вызовом метода .signal()
+         * Другой поток будет ждать этого сигнала с помощью метода .await()
+         */
+        //new MoneyRemove().start();
+        //new MoneyAdd().start();
+
+
+        /** Аналог Runnable
+         *  Запускает нить, выполняет её и методом .get() ждёт окончания её работы(подобие .join())
+         *  Callable - интерфейс, позволяет запустить нить и получить с неё результат( .call())
+         *  FutureTask - запускает нить и имеет дополнительные удобные методы
+         */
+        //new Thread(futureTask).start();
+        //System.out.println(futureTask.get());
 
     }
 
@@ -63,13 +85,24 @@ public class FeaturesThread {
         }
     }
 
-    static class MoneyAdd extends Thread{
+    static class MoneyAdd extends Thread {
         @Override
-        public void run(){
+        public void run() {
             lock.lock();
             money += 10;
             condition.signal();
             lock.unlock();
+        }
+    }
+
+    static class MyCallable implements Callable<Integer> {
+        @Override
+        public Integer call() throws Exception {
+            int j = 0;
+            for (int i = 0; i < 10; i++, j++) {
+                Thread.sleep(300);
+            }
+            return j;
         }
     }
 }
