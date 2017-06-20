@@ -12,6 +12,7 @@ public class FeaturesThread {
     private static FutureTask<Integer> futureTask = new FutureTask<>(callable);
     private static ExecutorService executorService = Executors.newFixedThreadPool(2);
     private static ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    private static Semaphore semaphore = new Semaphore(2);
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
@@ -42,15 +43,32 @@ public class FeaturesThread {
          * submit() - добавление в пул
          * shutdown() - ожидание завершения и закрытие пула
          */
-        executorService.submit(new Pool());
-        executorService.shutdown();
+        //executorService.submit(new Pool());
+        //executorService.shutdown();
 
         /** Запуск потока через определённое время
          * Указываем через какое время должен произойти запуст потока
          * shutdown() - ожидание завершения и закрытие пула
          */
-        scheduledExecutorService.schedule(new Pool(), 3, TimeUnit.SECONDS);
-        scheduledExecutorService.shutdown();
+        //scheduledExecutorService.schedule(new Pool(), 3, TimeUnit.SECONDS);
+        //scheduledExecutorService.shutdown();
+
+        /** Semaphore - общий ресурс, который состоит из количество потоков, которому семафор будет разрешать одновременно использовать заданный ресурс
+         * acquire() - блочит один ресурс
+         * release() - говорит, что ресурс свободен
+         */
+        SemaphorePerson person1 = new SemaphorePerson();
+        person1.table = semaphore;
+        person1.start();
+        SemaphorePerson person2 = new SemaphorePerson();
+        person2.table = semaphore;
+        person2.start();
+        SemaphorePerson person3 = new SemaphorePerson();
+        person3.table = semaphore;
+        person3.start();
+        SemaphorePerson person4 = new SemaphorePerson();
+        person4.table = semaphore;
+        person4.start();
     }
 
     static class MyThread extends Thread {
@@ -125,6 +143,24 @@ public class FeaturesThread {
         public String call() {
             //do smth
             return "1";
+        }
+    }
+
+    static class SemaphorePerson extends Thread {
+        Semaphore table;
+
+        @Override
+        public void run() {
+            System.out.println(this.getName() + " waiting for table");
+            try {
+                table.acquire();
+                System.out.println(this.getName() + " eat at the table");
+                sleep(1000);
+                System.out.println(this.getName() + " release table");
+                table.release();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
