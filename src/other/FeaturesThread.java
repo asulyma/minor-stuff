@@ -1,8 +1,6 @@
 package other;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
@@ -12,6 +10,7 @@ public class FeaturesThread {
     private static Condition condition = lock.newCondition();
     private static Callable<Integer> callable = new MyCallable();
     private static FutureTask<Integer> futureTask = new FutureTask<>(callable);
+    private static ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
@@ -36,6 +35,14 @@ public class FeaturesThread {
          */
         //new Thread(futureTask).start();
         //System.out.println(futureTask.get());
+
+        /** Pool потоков
+         * Повышенная производительность, расход ресурсов минимум
+         * submit() - добавление в пул
+         * shutdown() - ожидание завершения и закрытие пула.
+         */
+        executorService.submit(new Pool());
+        executorService.shutdown();
 
     }
 
@@ -103,6 +110,14 @@ public class FeaturesThread {
                 Thread.sleep(300);
             }
             return j;
+        }
+    }
+
+    static class Pool implements Callable<String> {     //or implements Runnable
+        @Override
+        public String call() {
+            //do smth
+            return "1";
         }
     }
 }
