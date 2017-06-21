@@ -13,6 +13,7 @@ public class FeaturesThread {
     private static ExecutorService executorService = Executors.newFixedThreadPool(2);
     private static ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     private static Semaphore semaphore = new Semaphore(2);
+    private static CountDownLatch countDownLatch = new CountDownLatch(3);
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
@@ -57,18 +58,28 @@ public class FeaturesThread {
          * acquire() - блочит один ресурс
          * release() - говорит, что ресурс свободен
          */
-        SemaphorePerson person1 = new SemaphorePerson();
-        person1.table = semaphore;
-        person1.start();
-        SemaphorePerson person2 = new SemaphorePerson();
-        person2.table = semaphore;
-        person2.start();
-        SemaphorePerson person3 = new SemaphorePerson();
-        person3.table = semaphore;
-        person3.start();
-        SemaphorePerson person4 = new SemaphorePerson();
-        person4.table = semaphore;
-        person4.start();
+        //SemaphorePerson person1 = new SemaphorePerson();
+        //person1.table = semaphore;
+        //person1.start();
+        //SemaphorePerson person2 = new SemaphorePerson();
+        //person2.table = semaphore;
+        //person2.start();
+        //SemaphorePerson person3 = new SemaphorePerson();
+        //person3.table = semaphore;
+        //person3.start();
+        //SemaphorePerson person4 = new SemaphorePerson();
+        //person4.table = semaphore;
+        //person4.start();
+
+        /** CountDownLatch - предоставляет возможность любому количеству потоков ожидать, пока не завершаться все потоки методом countDown()
+         * countDown() - уменьшает на единицу
+         * await() - ждёт, чтобы счётчик дошёл до нуля
+         */
+        new LatchWork(countDownLatch);
+        new LatchWork(countDownLatch);
+        new LatchWork(countDownLatch);
+        countDownLatch.await();
+        System.out.println("All job done");
     }
 
     static class MyThread extends Thread {
@@ -161,6 +172,25 @@ public class FeaturesThread {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+    static class LatchWork extends Thread{
+        CountDownLatch countDownLatch;
+
+        LatchWork(CountDownLatch countDownLatch) {
+            this.countDownLatch = countDownLatch;
+            start();
+        }
+
+        @Override
+        public void run() {
+            try {
+                sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Done work");
+            countDownLatch.countDown();
         }
     }
 }
