@@ -14,6 +14,7 @@ public class FeaturesThread {
     private static ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     private static Semaphore semaphore = new Semaphore(2);
     private static CountDownLatch countDownLatch = new CountDownLatch(3);
+    private static Exchanger<String> exchanger = new Exchanger<>();
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
@@ -75,11 +76,18 @@ public class FeaturesThread {
          * countDown() - уменьшает на единицу
          * await() - ждёт, чтобы счётчик дошёл до нуля
          */
-        new LatchWork(countDownLatch);
-        new LatchWork(countDownLatch);
-        new LatchWork(countDownLatch);
-        countDownLatch.await();
-        System.out.println("All job done");
+        //new LatchWork(countDownLatch);
+        //new LatchWork(countDownLatch);
+        //new LatchWork(countDownLatch);
+        //countDownLatch.await();
+        //System.out.println("All job done");
+
+        /** Exchanger<> обмен данных в разных потоках
+         * exchange() - передает эти данные между потоками, нужен общий exchange
+         */
+
+        new ExchangerExampleInfo(exchanger);
+        new ExchangerInput(exchanger);
     }
 
     static class MyThread extends Thread {
@@ -191,6 +199,43 @@ public class FeaturesThread {
             }
             System.out.println("Done work");
             countDownLatch.countDown();
+        }
+    }
+    static class ExchangerExampleInfo extends Thread{
+        Exchanger<String> exchanger;
+
+        ExchangerExampleInfo(Exchanger<String> exchanger) {
+            this.exchanger = exchanger;
+            start();
+        }
+
+        @Override
+        public void run() {
+            try {
+                exchanger.exchange("First example");
+                exchanger.exchange("Second example");
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    static class ExchangerInput extends Thread{
+        Exchanger<String> exchanger;
+
+        ExchangerInput(Exchanger<String> exchanger) {
+            this.exchanger = exchanger;
+            start();
+        }
+
+        @Override
+        public void run() {
+            try {
+                System.out.println(exchanger.exchange(null));
+                System.out.println(exchanger.exchange(null));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
