@@ -15,6 +15,7 @@ public class FeaturesThread {
     private static Semaphore semaphore = new Semaphore(2);
     private static CountDownLatch countDownLatch = new CountDownLatch(3);
     private static Exchanger<String> exchanger = new Exchanger<>();
+    private static CyclicBarrier cyclicBarrier = new CyclicBarrier(3, new CyclicRun());
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
@@ -85,9 +86,15 @@ public class FeaturesThread {
         /** Exchanger<> обмен данных в разных потоках
          * exchange() - передает эти данные между потоками, нужен общий exchange
          */
+        //new ExchangerExampleInfo(exchanger);
+        //new ExchangerInput(exchanger);
 
-        new ExchangerExampleInfo(exchanger);
-        new ExchangerInput(exchanger);
+        /** CyclicBarrier - циклический барьер. Позволяет не начинать работу потоку CyclinRun, пока все 3 потока не вызовут метод await()
+         */
+        new CyclicItem(cyclicBarrier);
+        new CyclicItem(cyclicBarrier);
+        new CyclicItem(cyclicBarrier);
+
     }
 
     static class MyThread extends Thread {
@@ -182,7 +189,8 @@ public class FeaturesThread {
             }
         }
     }
-    static class LatchWork extends Thread{
+
+    static class LatchWork extends Thread {
         CountDownLatch countDownLatch;
 
         LatchWork(CountDownLatch countDownLatch) {
@@ -201,7 +209,8 @@ public class FeaturesThread {
             countDownLatch.countDown();
         }
     }
-    static class ExchangerExampleInfo extends Thread{
+
+    static class ExchangerExampleInfo extends Thread {
         Exchanger<String> exchanger;
 
         ExchangerExampleInfo(Exchanger<String> exchanger) {
@@ -220,7 +229,8 @@ public class FeaturesThread {
             }
         }
     }
-    static class ExchangerInput extends Thread{
+
+    static class ExchangerInput extends Thread {
         Exchanger<String> exchanger;
 
         ExchangerInput(Exchanger<String> exchanger) {
@@ -234,6 +244,31 @@ public class FeaturesThread {
                 System.out.println(exchanger.exchange(null));
                 System.out.println(exchanger.exchange(null));
             } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    static class CyclicRun extends Thread {
+        @Override
+        public void run() {
+            System.out.println("Run is begin");
+        }
+    }
+
+    static class CyclicItem extends Thread {
+        CyclicBarrier cyclicBarrier;
+
+        public CyclicItem(CyclicBarrier cyclicBarrier) {
+            this.cyclicBarrier = cyclicBarrier;
+            start();
+        }
+
+        @Override
+        public void run() {
+            try {
+                cyclicBarrier.await();
+            } catch (InterruptedException | BrokenBarrierException e) {
                 e.printStackTrace();
             }
         }
