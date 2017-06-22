@@ -16,6 +16,7 @@ public class FeaturesThread {
     private static CountDownLatch countDownLatch = new CountDownLatch(3);
     private static Exchanger<String> exchanger = new Exchanger<>();
     private static CyclicBarrier cyclicBarrier = new CyclicBarrier(3, new CyclicRun());
+    private static Phaser phaser = new Phaser(2);
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
@@ -91,9 +92,14 @@ public class FeaturesThread {
 
         /** CyclicBarrier - циклический барьер. Позволяет не начинать работу потоку CyclinRun, пока все 3 потока не вызовут метод await()
          */
-        new CyclicItem(cyclicBarrier);
-        new CyclicItem(cyclicBarrier);
-        new CyclicItem(cyclicBarrier);
+        //new CyclicItem(cyclicBarrier);
+        //new CyclicItem(cyclicBarrier);
+        //new CyclicItem(cyclicBarrier);
+
+        /** Phaser - регистрирует два потока, и пока два потока не вызовут метод arriveAndAwaitAdvance(), не сможет идти дальше.
+         */
+        new WorkPhaser(phaser);
+        new WorkPhaser(phaser);
 
     }
 
@@ -270,6 +276,23 @@ public class FeaturesThread {
                 cyclicBarrier.await();
             } catch (InterruptedException | BrokenBarrierException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    static class WorkPhaser extends Thread {
+        Phaser phaser;
+
+        public WorkPhaser(Phaser phaser) {
+            this.phaser = phaser;
+            start();
+        }
+
+        @Override
+        public void run() {
+            for (int i = 1; i <= 3; i++) {
+                System.out.println(getName() + " washing the car " + i);
+                phaser.arriveAndAwaitAdvance();
             }
         }
     }
