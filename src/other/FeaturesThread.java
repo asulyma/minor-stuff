@@ -1,5 +1,6 @@
 package other;
 
+import java.util.Date;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -18,6 +19,9 @@ public class FeaturesThread {
     private static CyclicBarrier cyclicBarrier = new CyclicBarrier(3, new CyclicRun());
     private static Phaser phaser = new Phaser(2);
     private static BlockingQueue<String> queue = new PriorityBlockingQueue<>();
+    private static int numOfThread = Runtime.getRuntime().availableProcessors();
+    private static ForkJoinPool pool = new ForkJoinPool(numOfThread);
+    private static long valueOfOperation = 10_000_000_000L;
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
@@ -105,14 +109,22 @@ public class FeaturesThread {
         /** BlockingQueue - потокобезопасная очередь
          * Будет заблочена, если элемента нету
          */
-        new Thread(() -> {
-            try {
-                System.out.println(queue.take());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-        new Thread(() -> System.out.println(queue.add("item"))).start();
+        //new Thread(() -> {
+        //   try {
+        //       System.out.println(queue.take());
+        //    } catch (InterruptedException e) {
+        //        e.printStackTrace();
+        //    }
+        //}).start();
+        //new Thread(() -> System.out.println(queue.add("item"))).start();
+
+        /** ForkJoinFramework
+         * Позволяет разбить операцию на части рекурсивно и добиться увеличения производительности в разы за счёт
+         * переложения задач на другия ядра
+         */
+        System.out.println(new Date());
+        System.out.println(pool.invoke(new MyFork(0, valueOfOperation)));
+        System.out.println(new Date());
     }
 
     static class MyThread extends Thread {
@@ -305,6 +317,33 @@ public class FeaturesThread {
             for (int i = 1; i <= 3; i++) {
                 System.out.println(getName() + " washing the car " + i);
                 phaser.arriveAndAwaitAdvance();
+            }
+        }
+    }
+
+    static class MyFork extends RecursiveTask<Long> {
+        long from, to;
+
+        public MyFork(long from, long to) {
+            this.from = from;
+            this.to = to;
+        }
+
+        @Override
+        protected Long compute() {
+            if ((to - from) <= valueOfOperation / numOfThread) {
+                long j = 0;
+                for (long i = from; i < to; i++) {
+                    j += i;
+                }
+                return j;
+            } else {
+                long middle = (to + from) / 2;
+                MyFork firstHalf = new MyFork(from, middle);
+                firstHalf.fork();
+                MyFork secondHalf = new MyFork(middle + 1, to);
+                long secondValue = secondHalf.compute();
+                return firstHalf.join() + secondValue;
             }
         }
     }
