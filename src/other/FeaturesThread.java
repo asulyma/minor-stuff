@@ -17,6 +17,7 @@ public class FeaturesThread {
     private static Exchanger<String> exchanger = new Exchanger<>();
     private static CyclicBarrier cyclicBarrier = new CyclicBarrier(3, new CyclicRun());
     private static Phaser phaser = new Phaser(2);
+    private static BlockingQueue<String> queue = new PriorityBlockingQueue<>();
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
@@ -98,9 +99,20 @@ public class FeaturesThread {
 
         /** Phaser - регистрирует два потока, и пока два потока не вызовут метод arriveAndAwaitAdvance(), не сможет идти дальше.
          */
-        new WorkPhaser(phaser);
-        new WorkPhaser(phaser);
+        //new WorkPhaser(phaser);
+        //new WorkPhaser(phaser);
 
+        /** BlockingQueue - потокобезопасная очередь
+         * Будет заблочена, если элемента нету
+         */
+        new Thread(() -> {
+            try {
+                System.out.println(queue.take());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+        new Thread(() -> System.out.println(queue.add("item"))).start();
     }
 
     static class MyThread extends Thread {
