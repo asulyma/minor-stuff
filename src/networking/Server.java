@@ -6,11 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
-/**
- * Created by local on 21-Feb-17.
- */
 public class Server implements Runnable {
     private static Socket connectiom;
     private static ObjectOutputStream output;
@@ -27,9 +23,8 @@ public class Server implements Runnable {
                 input = new ObjectInputStream(connectiom.getInputStream());
                 output.writeObject("Message: "+ input.readObject());
             }
-        } catch (UnknownHostException e) {
-        } catch (IOException e) {
-        } catch (HeadlessException e) {
-        } catch (ClassNotFoundException e){}
+        } catch (IOException | HeadlessException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
