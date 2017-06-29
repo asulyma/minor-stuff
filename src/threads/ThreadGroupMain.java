@@ -1,4 +1,4 @@
-package other;
+package threads;
 
 public class ThreadGroupMain {
     public static void main(String[] args) {

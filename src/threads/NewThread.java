@@ -1,4 +1,4 @@
-package other;
+package threads;
 
 public class NewThread extends Thread {
     boolean suspendFlag;
