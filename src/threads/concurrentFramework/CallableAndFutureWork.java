@@ -1,8 +1,8 @@
-package threads;
+package threads.concurrentFramework;
 
 import java.util.concurrent.*;
 
-public class CallableDemo {
+public class CallableAndFutureWork {
     public static void main(String[] args) {
         ExecutorService executorService = Executors.newFixedThreadPool(3);
         Future<Integer> futureInt;
